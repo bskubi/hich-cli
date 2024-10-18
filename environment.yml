@@ -1,0 +1,32 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - git
+  - python
+  - pip
+  - polars
+  - numpy
+  - poetry
+  - pbgzip
+  - click
+  - cooler
+  - pairtools=1.1.0
+  - smart-open
+  - biopython
+  - ucsc-bedgraphtobigwig
+  - pyBigWig
+  - scipy
+  - pysam
+  - dash
+  - h5py
+  - natsort
+  - seaborn
+  - matplotlib
+  - pip:
+    - hicrep
+    - cooltools
+    - git+https://github.com/open2c/MultiQC.git
+    - hic-straw
+    - smart_open_with_pbgzip
+    - parse
