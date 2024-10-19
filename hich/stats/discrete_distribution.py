@@ -26,6 +26,7 @@ class DiscreteDistribution(Counter):
     def bounded_probabilistic_round(cls, n, n_min, n_max):
         """Round n up or down probabilitistically within bounds (n_min, n_max)
         """
+        # Testing difficulties: stochastic
         lower = max(n_min, math.floor(n)) if n_min else math.floor(n)
         upper = min(n_max, math.ceil(n)) if n_max else math.ceil(n)
         prob_up = n - lower
@@ -40,6 +41,7 @@ class DiscreteDistribution(Counter):
 
     def to_size(self, n: Number, lower_bounds = {}, upper_bounds = {}) -> 'DiscreteDistribution':
         """Downsample to a specific number of reads (n is integer) or multiple of reads (n is float)"""
+        # Testing difficulties: behaves quite differently depending on n's type 
         total = n if isinstance(n, int) else self.total() * n
 
         new_counts = {}
@@ -59,6 +61,8 @@ class DiscreteDistribution(Counter):
 
         Find the maximum N such that 0 <= N*probdist[event] <= self[event] for all events
         """
+        # Testing difficulty: linear programming result would have to be hand-verified
+
         # Cost function (linear programming attempts to minimize cost, so we
         # aim to minimize the negative sum of counts in order to maximize
         # the sum of counts)
@@ -111,11 +115,14 @@ class DiscreteDistribution(Counter):
             result[event] /= denom
         return result
 
-    def copy(self) -> 'DiscreteDistribution': return deepcopy(self)
+    def copy(self) -> 'DiscreteDistribution':
+        return deepcopy(self)
 
     def outcomes(self, events = None) -> list[Number]:
-        if not events: return list(self.values())
-        else: return [self[event] for event in events]
+        if not events:
+            return list(self.values())
+        else:
+            return [self[event] for event in events]
 
     def events(self) -> list[object]:
         return list(self.keys())

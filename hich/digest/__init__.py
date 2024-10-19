@@ -89,7 +89,7 @@ def kit_names_to_enzymes(digest):
     print(enzymes)
     return enzymes
 
-def digest(output, startshift, endshift, cutshift, reference, digest):
+def make_fragment_index(output, startshift, endshift, cutshift, reference, digest):
     enzyme_names = kit_names_to_enzymes(digest)
 
     return make_frag_index(reference,
