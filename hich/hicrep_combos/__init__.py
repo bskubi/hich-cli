@@ -34,8 +34,11 @@ save a dataframe specifying the parameters and results.
 """
 
 class SCC(float):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     def distance(self):
         (.5*(1-self))**.5 if self != np.nan else 0
+
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
 
 @dataclass
 class HicrepCall:
@@ -62,9 +65,11 @@ class HicrepCall:
         return self
 
 def run_hicrep(call):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     return call.run_hicrep()
 
 def parallel_hicrep(callers, max_workers = None):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     with concurrent.futures.ProcessPoolExecutor(max_workers = max_workers) as executor:
         results = executor.map(run_hicrep, callers)
     if results:
@@ -73,6 +78,7 @@ def parallel_hicrep(callers, max_workers = None):
         return pl.DataFrame(rows, orient='row', schema=columns)
 
 def shared_chroms(filenames: List[str], filter = lambda chrom, size: chrom):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     all_chroms = None
     for filename in filenames:
         coolers = []
@@ -102,6 +108,7 @@ def hicrep_callers(matrices: List,
                    bDownSample: List[bool],
                    matrix_pair_function = combinations_with_replacement,
                    param_set_function = product):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     
     def asiterable(arg):
         return arg if isinstance(arg, Iterable) else [arg]
@@ -120,6 +127,7 @@ def hicrep_callers(matrices: List,
     return [HicrepCall(combo[0][0], combo[0][1], *combo[1]) for combo in combos]
     
 def hicrep_combos(resolutions, chroms, exclude, chromFilter, h, d_bp_max, b_downsample, nproc, output, paths):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     assert paths, "No paths specified in hich hicrep"
     chroms = chroms or shared_chroms(paths, lambda chrom, size: eval(chromFilter))
     chroms = set(chroms) - set(exclude) if exclude else chroms

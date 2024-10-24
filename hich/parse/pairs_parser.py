@@ -27,9 +27,9 @@ exception_on_4dn_violation: bool = True) -> Union[str, pl.DataFrame]:
     Subsequent yielded items are Polars DataFrames containing up to
     batch_size .pairs records. The fields will be named according to the
     #columns: line, whether or not yield_columns_line is True or False. All
-    types will be strings. If more than one #columns: line is present, the last
-    one before teh 
+    types will be strings.
     """
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     # Used to accumulate header lines or records for a batch
     header_lines = []
     records = []
@@ -109,7 +109,7 @@ exception_on_4dn_violation: bool = True) -> Union[str, pl.DataFrame]:
         # yield them in a final partial batch.
         yield pl.DataFrame(records, orient='row', schema=schema)
 
-
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
 class PairsParser:
     def __init__(self, filename):
         self.filename = filename

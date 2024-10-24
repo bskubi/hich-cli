@@ -3,6 +3,8 @@ from dataclasses import dataclass, field
 import pysam
 import subprocess
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 @dataclass
 class AlignmentSplitter(FileSplitter):
     header: pysam.AlignmentHeader = None

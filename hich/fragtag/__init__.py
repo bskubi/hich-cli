@@ -1,29 +1,3 @@
-import click
-import numpy as np
-import polars as pl
-import time
-import warnings
-import sys
-from hich.parse.pairs_parser import PairsParser
-from hich.fragtag.frag_index import FragIndex
-from hich.fragtag.bedpe_pairs import BedpePairs
-from hich.fragtag.samheader_fragtag import SamheaderFragtag
+from hich.fragtag.tag_restriction_fragments import tag_restriction_fragments
 
-def tag_restriction_fragments(frags_filename: str,
-                              input_pairs_filename: str,
-                              output_pairs_filename: str,
-                              batch_size: int = 1000000):
-    
-    frag_index = FragIndex(frags_filename)
-
-    pairs_parser = PairsParser(input_pairs_filename)
-
-    for df in pairs_parser.batch_iter(batch_size):  
-        df = BedpePairs(df).fragtag(frag_index)
-
-        pairs_parser.write_append(output_pairs_filename,
-                                  df,
-                                  header_end = SamheaderFragtag())
-
-
-    pairs_parser.close()
+__all__ = ['tag_restriction_fragments']

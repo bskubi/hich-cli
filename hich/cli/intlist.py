@@ -1,6 +1,8 @@
-from hich.cli.util.paramlist import _ParamList
+from hich.cli.paramlist import ParamList
 
-class _IntList(_ParamList):
+# See tests/test_cli_types.py for unit tests
+
+class _IntList(ParamList):
     name = "int_list"
 
     def value_type(self):

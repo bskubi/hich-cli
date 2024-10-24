@@ -1,5 +1,7 @@
 from pathlib import Path
-#from parse import parse
+from parse import parse
+
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
 
 class PairsHeader:
     version_prefix = "## pairs format v"

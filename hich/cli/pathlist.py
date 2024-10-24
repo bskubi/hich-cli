@@ -1,7 +1,9 @@
-from hich.cli.util.paramlist import _ParamList
+from hich.cli.paramlist import ParamList
 from pathlib import Path
 
-class _PathList(_ParamList):
+# Not currently unit tested as of 2024/10/20 - Ben Skubi
+
+class _PathList(ParamList):
     name = "path_list"
 
     def value_type(self):

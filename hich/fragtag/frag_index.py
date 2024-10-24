@@ -1,6 +1,8 @@
 import numpy as np
 import polars as pl
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 class FragIndex:
     def __init__(self, filename = None):
         if filename:

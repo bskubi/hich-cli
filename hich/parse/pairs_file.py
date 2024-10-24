@@ -4,6 +4,8 @@ from hich.parse.pairs_header import PairsHeader
 from hich.parse.pairs_segment import PairsSegment
 from pathlib import PurePath, Path
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 @dataclass
 class PairsFile:
     filepath_or_object: str = None

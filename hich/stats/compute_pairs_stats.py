@@ -9,6 +9,7 @@ def compute_pairs_stats_on_path(data: Tuple["PairsClassifier", Path]) -> Tuple[s
     data - a (PairsClassifier, Path) tuple for classifying PairsSegments from a PairsFile as events
     and counting the number of events.
     """
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     from hich.stats import DiscreteDistribution
     from hich.pairs import PairsClassifier, PairsFile, PairsSegment
 
@@ -28,6 +29,7 @@ def aggregate_classifier(pairs_stats_paths: list[str]) -> Tuple["PairsClassifier
 
     pairs_stats_paths -- list of filenames containing pairs stats
     """
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     from hich.pairs import PairsClassifier
     from hich.stats import DiscreteDistribution
     dfs = []
@@ -71,6 +73,7 @@ def aggregate_classifier(pairs_stats_paths: list[str]) -> Tuple["PairsClassifier
 
 
 def load_stats_and_classifier_from_file(pairs_stats_header_tsv_path):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     from hich.stats import DiscreteDistribution
     from hich.pairs import PairsClassifier, PairsFile
     df = pl.read_csv(pairs_stats_header_tsv_path, separator = "\t", infer_schema_length = None)
@@ -97,5 +100,6 @@ def load_stats_and_classifier_from_file(pairs_stats_header_tsv_path):
     return classifier, distribution
 
 def compute_pairs_stats_on_path_list(classifier, pairs_paths):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     data = [(classifier, path) for path in pairs_paths]
     return Pool().map(compute_pairs_stats_on_path, data)

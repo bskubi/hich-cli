@@ -1,5 +1,5 @@
 import click
-from hich.cli import *
+from hich.commands import *
 
 @click.group
 def hich():
@@ -12,7 +12,7 @@ hich.add_command(compartments)
 hich.add_command(downsample)
 hich.add_command(digest)
 hich.add_command(fragtag)
-hich.add_command(organize)
+#hich.add_command(organize)
 hich.add_command(hicrep)
 hich.add_command(reshape)
 hich.add_command(stats)

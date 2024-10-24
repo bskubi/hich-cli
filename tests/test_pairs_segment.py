@@ -1,4 +1,5 @@
-from hypothesis import given, example, strategies as st, assume, target
+from hypothesis import given, example, assume, target
+from hypothesis import strategies as st
 from hich.pairs import PairsSegment
 from tests.utilities import cis_or_trans_chroms
 

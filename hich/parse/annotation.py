@@ -16,6 +16,8 @@ a value of 'key'
 
 """
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 class AnnotationFile(dict):
 
     def read_csv(self, file, key_col = None, **kwargs):

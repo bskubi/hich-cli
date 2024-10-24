@@ -1,6 +1,8 @@
-from hich.cli.util.paramlist import _ParamList
+from hich.cli.paramlist import ParamList
 
-class _BooleanList(_ParamList):
+# See tests/test_cli_types.py for unit tests
+
+class _BooleanList(ParamList):
     name = "boolean_list"
 
     def value_type(self):
@@ -12,6 +14,6 @@ class _BooleanList(_ParamList):
         elif value.lower() in ('false', '0', 'no'):
             return False
         else:
-            raise ValueError(f"{value} is not a valid boolean")
+            raise ValueError(f"'{value}' is not a valid boolean")
 
 BooleanList = _BooleanList()

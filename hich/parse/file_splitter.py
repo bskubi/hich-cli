@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 @dataclass
 class FileSplitter:
     handles: dict = field(default_factory = dict[str, object])

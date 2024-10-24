@@ -21,7 +21,7 @@ def organize(fmt: str,
              key_code: str = None,
              record_code: str = None,
              output_code: str = None):
-    
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     def yield_none():
         while True: yield None
 

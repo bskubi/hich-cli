@@ -1,6 +1,6 @@
 import click
 from pathlib import Path
-from hich.cli.util import StrList
+from hich.cli import StrList
 from hich.compartments import write_compartment_scores
 
 @click.command
@@ -12,6 +12,8 @@ from hich.compartments import write_compartment_scores
 @click.argument("matrix")
 @click.argument("resolution", type = int)
 def compartments(chroms, exclude_chroms, keep_chroms_when, n_eigs, reference, matrix, resolution):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
+    
     matrix = Path(matrix)
     reference = Path(reference)
     final_suffix = matrix.suffixes[-1]

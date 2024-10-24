@@ -5,6 +5,8 @@ from hich.parse.pairs_segment import PairsSegment
 from hich.parse.pairs_file import PairsFile
 from hich.parse.file_splitter import FileSplitter
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 @dataclass
 class PairsSplitter(FileSplitter):
     """ Write to 4DN Consortium .pairs-format files, creating handles as needed

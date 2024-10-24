@@ -1,5 +1,5 @@
 import click
-from hich.cli.util import IntList, StrList, BooleanList
+from hich.cli import IntList, StrList, BooleanList
 from hich.hicrep_combos import hicrep_combos
 
 @click.command
@@ -14,6 +14,7 @@ from hich.hicrep_combos import hicrep_combos
 @click.option("--output", type=str, default = None)
 @click.argument("paths", type=str, nargs = -1)
 def hicrep(resolutions, chroms, exclude, chrom_filter, h, d_bp_max, b_downsample, nproc, output, paths):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     result = hicrep_combos(resolutions, chroms, exclude, chrom_filter, h, d_bp_max, b_downsample, nproc, output, paths)
     if result is not None:
         click.echo(result)

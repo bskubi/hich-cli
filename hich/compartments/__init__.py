@@ -17,6 +17,7 @@ import copy
 from smart_open import smart_open
 
 def chromsizes_hic(path: Path) -> Dict[str, int]:
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     h = hicstraw.HiCFile(str(path.resolve()))
     chroms = h.getChromosomes()
     chromsizes = {}
@@ -25,6 +26,7 @@ def chromsizes_hic(path: Path) -> Dict[str, int]:
     return chromsizes
 
 def chromsizes_mcool(path: Path, resolution: int) -> Dict[str, int]:
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     abs_path = str(path.resolve())
     cooler_collections = cooler.fileops.list_coolers(abs_path)
     cooler_collection = f"/resolutions/{resolution}"
@@ -34,6 +36,7 @@ def chromsizes_mcool(path: Path, resolution: int) -> Dict[str, int]:
     return c.chromsizes.to_dict()
 
 def chromsizes(filename: Path, resolution: int = None) -> Dict[str, int]:
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     path = Path(filename)
     assert path.exists(), f"{filename} not found at {path.resolve()}"
     
@@ -45,12 +48,14 @@ def chromsizes(filename: Path, resolution: int = None) -> Dict[str, int]:
     raise Exception(f"Extension {suffix} not supported by hich compartments called on {path.resolve()}")
 
 def flex_chromname(real_chromnames: List[str], chromname: str, flexible: List[str] = ["chr"]):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     for real_chromname, flex in itertools.product(real_chromnames, flexible):
         if chromname == real_chromname or chromname.replace(flex, "") == real_chromname.replace(flex, ""):
             return real_chromname
     return None
 
 def dense_cis_count_matrix_hic(path: Path, resolution: int, chrom: str):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     h = hicstraw.HiCFile(str(path.resolve()))
     resolutions = h.getResolutions()
     chromsizes = chromsizes_hic(path)
@@ -77,6 +82,7 @@ def dense_cis_count_matrix_hic(path: Path, resolution: int, chrom: str):
     return coo_matrix((count, (row, col))).toarray()
                  
 def dense_cis_count_matrix_mcool(path: Path, resolution: int, chrom: str):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     abs_path = str(path.resolve())
     cooler_collections = cooler.fileops.list_coolers(abs_path)
     cooler_collection = f"/resolutions/{resolution}"
@@ -86,6 +92,7 @@ def dense_cis_count_matrix_mcool(path: Path, resolution: int, chrom: str):
     return c.matrix(sparse=False, balance=False).fetch(chrom)
 
 def dense_cis_count_matrix(filename: str, resolution: int, chrom: str, flex: bool = True):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     path = Path(filename)
     assert path.exists(), f"{filename} not found at {path.resolve()}"
     
@@ -103,6 +110,7 @@ def dense_cis_count_matrix(filename: str, resolution: int, chrom: str, flex: boo
     raise Exception(f"Extension {suffix} not supported by hich compartments called on {path.resolve()}")
 
 def corr_neg(a, b):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     def ok(v):
         return not np.isnan(v) and v is not None
 
@@ -115,6 +123,7 @@ def corr_neg(a, b):
     
     return np.corrcoef(keep_a, keep_b)[0][1] < 0
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
 @dataclass
 class BEDSignal:
     chrom: str = ""
@@ -152,6 +161,7 @@ class BEDSignal:
         self.ends = np.append((self.starts[1:] - 1), endpoint)
 
 def gc_dist(bed, seq_iter, resolution):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     while batch := tuple(itertools.islice(seq_iter, None, resolution)):
         frac_g = (batch.count("G") + batch.count("G"))/len(batch)
         g_dist.append(frac_g)
@@ -162,6 +172,7 @@ def gc_dist(bed, seq_iter, resolution):
     return GCDist(g_dist, starts, ends)
 
 def frac_gc_bed(seqio_record, resolution):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     seq_iter = iter(seqio_record.seq)
     chrom = seqio_record.id
     chromsize = len(seqio_record.seq)
@@ -178,11 +189,13 @@ def frac_gc_bed(seqio_record, resolution):
     return bed
 
 def compartment_scores(matrix: Path, resolution: int, chrom: str, guide: BEDSignal, n_eigs: int) -> List[BEDSignal]:
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     mx = dense_cis_count_matrix(matrix, resolution, chrom)
     vals, vecs = cis_eig(mx, n_eigs = n_eigs)
     return [guide.direct(vec) for vec in vecs]
 
 def fasta_chromsizes(fasta: TextIO, chroms: List[str], exclude_chroms: List[str], keep_chroms_rule: List[str]) -> List[Tuple[str, int]]:
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     sizes = []
     todo = copy.deepcopy(chroms)
     for record in SeqIO.parse(fasta, "fasta"):
@@ -213,6 +226,7 @@ def write_compartment_scores(bigwig_prefix: str,
                              exclude_chroms: List[str] = None,
                              keep_chroms_rule: str = None,
                              n_eigs: int = 3):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     ref_abs_path = str(reference.resolve())
     ref_handle = smart_open(ref_abs_path, mode = "rt")
     bw_header = fasta_chromsizes(ref_handle, chroms, exclude_chroms, keep_chroms_rule)
@@ -262,9 +276,4 @@ def write_compartment_scores(bigwig_prefix: str,
     print("Displaying headers")
     for bw in bigwigs:
         print("Wrote", bw.header())
-
-# mx = Path("Mock.hic")
-
-# ref = Path("GRCh38_no_alt_analysis_set_GCA_000001405.15.fasta.gz")
-# write_compartment_scores("mock", mx, ref, 100000, ["chr1", "chr2"], 3)
 

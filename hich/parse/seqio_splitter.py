@@ -5,6 +5,8 @@ import io
 import subprocess
 from smart_open import smart_open
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 @dataclass
 class SeqIOSplitter(FileSplitter):
     format_name: str = None

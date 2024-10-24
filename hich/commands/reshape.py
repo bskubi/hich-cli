@@ -3,6 +3,8 @@ import smart_open_with_pbgzip
 from smart_open import smart_open
 from hich.pairs import read_pairs
 import polars as pl
+import sys
+import io
 
 @click.command()
 @click.option("--read_from", type=str, default="")
@@ -14,6 +16,7 @@ import polars as pl
 @click.option("--select", type=str, default = "", help="Space-separated list of output column names to output in the order specified")
 @click.option("--batch-size", type=int, default=10000, help="Number of records per batch")
 def reshape(read_from, output_to, parse, placeholder, regex, drop, select, batch_size):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     read_from = smart_open(read_from, "rt") if read_from else sys.stdin
     reader = read_pairs(read_from, yield_columns_line=False, batch_size=batch_size)
     header = next(reader)

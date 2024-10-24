@@ -13,6 +13,7 @@ from pathlib import Path
 def stats_aggregate(to_group_mean, to_group_min, to_size, prefix, outlier, stats_paths):
     """Aggregate hich stats files called over .pairs with same conjuncts
     """
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
 
     # Load the stats files into dataframes.
     # Ensure the stats files have identical conjuncts.

@@ -7,7 +7,9 @@ from statistics import mean
 import numpy as np
 import random
 import math
-from multipledispatch import dispatch
+
+# See tests/test_discrete_distribution.py for unit tests
+
 
 class DiscreteDistribution(Counter):
     @classmethod

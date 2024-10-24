@@ -7,6 +7,7 @@ import time
 import bisect
 
 # Latest code review: 2024/10/17, Ben Skubi
+# See tests/test_pairs_classifier.py for unit tests
 
 def nat_partition(cuts):
     return sorted(list(set(cuts + [float('inf')]))) if cuts else None

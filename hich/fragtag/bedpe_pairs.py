@@ -1,5 +1,7 @@
 import polars as pl
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 class BedpePairs:
     def __init__(self, df):
         self.df = df

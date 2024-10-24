@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import sys
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 @dataclass
 class SamheaderCoverage:
     AT: str = "HC"

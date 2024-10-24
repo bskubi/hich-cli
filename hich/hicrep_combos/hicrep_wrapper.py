@@ -11,6 +11,7 @@ def cool2pixels(cool: cooler.api.Cooler):
     Returns:
         cooler.core.RangeSelector2D object
     """
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     return cool.matrix(as_pixels=True, balance=True, sparse=True)
 
 
@@ -38,6 +39,7 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     Returns:
         `float` scc scores for each chromosome
     """
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     
     # Get binsize for each contact matrix
     binSize1 = cool1.binsize
@@ -146,6 +148,7 @@ def computeSCC(mS1: sp.coo_matrix,
                dMax: int,
                h: float,
                bDownSample: bool) -> float:
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     # Compute scc score
     nDiags = mS1.shape[0] if dMax < 0 else min(dMax, mS1.shape[0])
     rho = np.full(nDiags, np.nan)

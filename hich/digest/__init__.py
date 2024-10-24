@@ -8,6 +8,7 @@ from smart_open import smart_open
 import polars as pl
 
 def sorted_unique_cut_sites(seq_record, enzymes, cutshift = 1):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     df = {"chrom":[], "start":[], "end":[]}
     digest = enzymes.search(seq_record.seq)
     digest = [digest[enzyme] for enzyme in digest]
@@ -17,6 +18,7 @@ def sorted_unique_cut_sites(seq_record, enzymes, cutshift = 1):
     return cut_sites
 
 def chrom_frags_df(seq_record, enzymes, cutshift = 1):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     start = [0]
     end = [len(seq_record.seq)]
     frag_ends = start + sorted_unique_cut_sites(seq_record, enzymes, cutshift) + end
@@ -31,6 +33,7 @@ def chrom_frags_df(seq_record, enzymes, cutshift = 1):
     return pl.DataFrame(df)
 
 def write_bed_file(frag_index, output_file):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     handle = smart_open(output_file, "w") if output_file else sys.stdout
     frag_index.write_csv(handle, include_header=False, separator="\t")
 
@@ -40,6 +43,7 @@ def make_frag_index(reference_filename,
                     startshift = 0,
                     endshift = 0,
                     cutshift = 1):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     # Load the reference genome
     reference_file = smart_open(reference_filename, "rt")
     seq_record = SeqIO.parse(reference_file, "fasta")
@@ -61,6 +65,7 @@ def make_frag_index(reference_filename,
     write_bed_file(frag_index, output_file)
 
 def kit_names_to_enzymes(digest):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     digest = set(digest)
     enzymes = set()
 
@@ -90,6 +95,7 @@ def kit_names_to_enzymes(digest):
     return enzymes
 
 def make_fragment_index(output, startshift, endshift, cutshift, reference, digest):
+    # !Warning: this method has no specific unit test as of 2024/10/20 - Ben Skubi
     enzyme_names = kit_names_to_enzymes(digest)
 
     return make_frag_index(reference,

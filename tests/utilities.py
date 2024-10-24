@@ -1,5 +1,6 @@
 from hypothesis import strategies as st
 import string
+
 def cis_or_trans_chroms():
     chrom1 = st.text(min_size=1, max_size=10, alphabet=string.ascii_letters + string.digits)
     chrom2 = st.text(min_size=1, max_size=10, alphabet=string.ascii_letters + string.digits)

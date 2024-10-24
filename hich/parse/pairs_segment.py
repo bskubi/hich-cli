@@ -1,4 +1,7 @@
 import time
+
+# See tests/test_pairs_segment.py for unit tests
+
 class PairsSegment:
     reserved = {"readID": str, "chr1": str, "pos1": int,
                 "chr2": str, "pos2": int, "strand1": str, "strand2": str}

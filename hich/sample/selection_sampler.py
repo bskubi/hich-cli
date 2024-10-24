@@ -2,6 +2,8 @@ from hich.stats.discrete_distribution import DiscreteDistribution
 from dataclasses import dataclass, field
 from random import random
 
+# !Warning: this class has no specific unit test as of 2024/10/20 - Ben Skubi
+
 @dataclass
 class SelectionSampler:
     full: DiscreteDistribution = field(default_factory = DiscreteDistribution)
