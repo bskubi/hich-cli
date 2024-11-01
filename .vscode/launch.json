@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Hich Command",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/bin/bash",
+            "args": [
+                "-c",
+                "/home/benjamin/miniforge3/envs/hichdev/bin/hich fragtag 'hg38_DdeI_DpnII.bed' 'Formaldehyde+DSG,_DdeI_and_DpnII,_HFFc6_(Tier_1)_1_1_fragtag.pairs.gz' 'Formaldehyde+DSG,_DdeI_and_DpnII,_HFFc6_(Tier_1)_1_1.pairs.gz'"
+            ],
+            "cwd": "/home/benjamin/Documents/hic-pipeline-comparisons/hich/work/c2/d81659d35f5d3e7c5e648decda03d9",
+            "console": "integratedTerminal"
+        }
+    ]
+}

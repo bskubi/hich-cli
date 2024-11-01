@@ -1,10 +1,8 @@
-from hich.parse.pbgzip import *
 from smart_open import smart_open
 from typing import Union
 import click
 import io
 import pandas as pd
-import polars as pl
 import polars as pl
 import smart_open
 import smart_open_with_pbgzip
@@ -184,8 +182,7 @@ class PairsParser:
         warnings.filterwarnings("ignore", message="Polars found a filename")
 
         if self.write_file is None:
-            
-            self.write_file = smart_open.open(filename, "w", compression = compression(filename))
+            self.write_file = smart_open.open(filename, "w")
             header_no_columns = self.header()[:-1]
             final_header_line_fields = header_no_columns[-1].split()
             
@@ -203,14 +200,15 @@ class PairsParser:
             self.write_file.write(header)
 
         if df is not None:
-            df.write_csv(self.write_file,
+            buffer = io.StringIO()
+            df.write_csv(buffer,
                         include_header = False,
                         separator = '\t')
+            buffer.seek(0)
+            self.write_file.write(buffer.getvalue())
+            buffer.close()
 
     def close(self):
         if self.write_file is not None:
-            filename = self.write_file.name
             self.write_file.close()
             self.write_file = None
-            if filename.endswith(".gz") or filename.endswith(".gzip"):
-                pbgzip_compress(filename)
