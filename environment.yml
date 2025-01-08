@@ -30,3 +30,5 @@ dependencies:
     - hic-straw
     - smart_open_with_pbgzip
     - parse
+    - tinydb
+    - partitioned
