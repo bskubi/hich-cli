@@ -19,7 +19,7 @@ def count_pairs_stats(classifier: PairsClassifier, pairs_file: PairsFile) -> Dis
 @click.option("--conjuncts",
     type = StrList,
     default = "chrom1, chrom2, pair_type, stratum",
-    show_default = StrList,
+    show_default = True,
     help = "PairsSegment traits that define the category for each record (comma-separated string list)")
 @click.option("--cis-strata",
     type = IntList,

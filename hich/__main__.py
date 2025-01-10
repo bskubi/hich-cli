@@ -9,6 +9,7 @@ def hich():
 def view(): pass
 
 hich.add_command(compartments)
+hich.add_command(create_scool)
 hich.add_command(downsample)
 hich.add_command(digest)
 hich.add_command(fragtag)

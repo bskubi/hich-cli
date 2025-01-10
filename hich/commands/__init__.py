@@ -1,4 +1,5 @@
 from hich.commands.compartments import compartments
+from hich.commands.create import create_scool
 from hich.commands.digest import digest
 from hich.commands.downsample import downsample
 from hich.commands.fragtag import fragtag
@@ -14,4 +15,4 @@ from hich.commands.stats import stats
 
 
 
-__all__ = ['compartments', 'digest', 'downsample', 'fragtag', 'gather', 'hicrep_comparisons', 'hicrep', 'organize', 'reshape', 'stats_aggregate', 'stats']
+__all__ = ['compartments', 'create_scool', 'digest', 'downsample', 'fragtag', 'gather', 'hicrep_comparisons', 'hicrep', 'organize', 'reshape', 'stats_aggregate', 'stats']

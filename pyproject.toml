@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hich"
-version = "0.1.0"
+version = "0.1.4"
 description = ""
 authors = ["Ben Skubi <bskubi@gmail.com>"]
 readme = "README.md"
@@ -9,10 +9,35 @@ readme = "README.md"
 hich = "hich.__main__:hich"
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.12"
+numpy = "<2.0"
+pandas = "*"
+polars = "*"
+duckdb = "*"
+cooler = "*"
+click = "*"
+tinydb = "*"
+smart_open = "*"
+smart_open_with_pbgzip = "*"
+pyBigWig = "*"
+hic-straw = "*"
+cooltools = "*"
+scipy = "*"
+biopython = "*"
+pysam = "*"
+h5py = "*"
+pydantic = "*"
+seaborn = "*"
+dash = "*"
+natsort = "*"
+plotly = "*"
+matplotlib = "*"
+parse = "*"
+hicrep = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "7.4.4"
+hypothesis = "*"
 
 [build-system]
 requires = ["poetry-core"]
