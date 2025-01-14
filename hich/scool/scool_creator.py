@@ -1,22 +1,25 @@
-
 import cooler
 from typing import Protocol, Dict, Iterable, Union, List, Any
 import pandas
-from pathlib import Path
+import polars
+import duckdb
+from pathlib import Path, PurePath
 from dataclasses import dataclass, field
 import sys
+from hich.pairs import PairsHeader, PairsFile
+from parse import parse
 
 class BinPixelParser(Protocol):
     """Construct inputs to Open2C cooler create_scool method
     """
 
     @classmethod
-    def can_parse(cls, obj) -> bool:
+    def can_parse(cls, obj, config: Dict = {}) -> bool:
        """Return whether the IterDictParser can parse the object"""
        ...
 
     @classmethod
-    def cell_name(cls, obj: Any, config: Dict) -> str:
+    def cell_names(cls, obj: Any, config: Dict) -> Union[str, List[str]]:
         """Return the name associated with the object"""
         ...
 
@@ -85,7 +88,7 @@ Options to associate a Cooler object or file with a cell name include:
 """
 )
     @classmethod
-    def can_parse(cls, obj) -> bool:
+    def can_parse(cls, obj, config: Dict = {}) -> bool:
         """Return whether the CoolBinPixelParser can parse the object"""
         if isinstance(obj, cooler.Cooler):
             return True
@@ -98,7 +101,7 @@ Options to associate a Cooler object or file with a cell name include:
         return False
 
     @classmethod
-    def cell_name(cls, obj: Union[cooler.Cooler, str] = None, config: Dict = {}) -> str:
+    def cell_names(cls, obj: Union[cooler.Cooler, str] = None, config: Dict = {}) -> str:
         """Return the name associated with the object"""
         # Various ways of getting the cell name
         if "cell" in config:
@@ -232,6 +235,175 @@ Options to associate a Cooler object or file with a cell name include:
         if target_resolution is not None and c.binsize != target_resolution:
             raise ValueError(f"Cooler.binsize is {c.binsize} but config['resolution'] is {target_resolution}. Set to None for no filter or the true resolution/binsize of this Cooler object.")
 
+class PairsBinPixelParser:
+    """Parses .pairs files"""
+
+    @classmethod
+    def can_parse(cls, obj: str, config: Dict) -> bool:
+        """Requires a file conforming to 4DN .pairs header format with required columns
+
+        Columns required are 'chrom1', 'pos1', 'chrom2', and 'pos2'
+        These can be remapped in the config dict by using these strings as
+        keys in the config dict and setting the actual .pairs columns to use as the
+        values.
+        """
+        columns: List[str]
+
+        # Try to get columns from the pairs file
+        try:
+            pairs_file = PairsFile(obj)
+            columns = pairs_file.header.columns
+        except:
+            return False
+
+        # Extract the required columns from config or use defaults, then
+        # check to make sure all of them were in the header
+        chrom1 = config.get("chrom1", "chrom1")
+        pos1 = config.get("pos1", "pos1")
+        chrom2 = config.get("chrom2", "chrom2")
+        pos2 = config.get("pos2", "pos2")
+
+        has_required_cols = all([
+            chrom1 in columns,
+            pos1 in columns,
+            chrom2 in columns,
+            pos2 in columns
+        ])
+
+        return has_required_cols
+
+
+    @classmethod
+    def cell_names(cls, obj: str = None, config: Dict = {}) -> List[str]:
+        """Return the name associated with the object"""
+        # Several possibilities:
+        
+        # 1. Extract from read names or some other specified column using some sort of parse or regex format in config
+        # 2. Config contains method to map from read names to cell names
+        # 3. If no parsing method is given, extract a single name from the filepath
+
+        if "cell" in config:
+            return config["cell"]
+        elif "cell_name_col" not in config:
+            path = Path(obj)
+            return str(path.name.removesuffix(path.suffix))
+        else:
+            raise NotImplementedError("In PairsBinPixelParser, parsing cell names from multi-cell .pairs file not implemented yet")
+
+    @classmethod
+    def cell_name_bins_dict(
+        cls, 
+        cell_name: str,
+        obj: Union[cooler.Cooler, str],
+        config: Dict,
+        shared_bins: Union[None, pandas.DataFrame] = None,
+        extended_bins_cols: Union[bool, List[str]] = True,
+        *args,
+        **kwargs
+        ) -> Dict[str, pandas.DataFrame]:
+        """Return cell bin dict for a cooler.Cooler object or filename to a .cool file
+        """
+        ...
+
+    @classmethod
+    def cell_name_pixels_dict(
+        cls,
+        cell_name: str,
+        obj: str,
+        config: Dict,
+        shared_bins: pandas.DataFrame,
+        extended_pixels_cols: Union[bool, List[str]] = True,
+        regions_iter: Iterable = None,
+        *args,
+        **kwargs
+        ) -> Dict[str, Iterable]:
+        """Return cell pixel iter dict for a cooler.Cooler object or filename to a .cool file
+        """
+        raise NotImplementedError("cell_name_pixels_dict not implemented yet in PairsBinPixelParser")
+        # Extract the required columns from config or use defaults, then
+        # check to make sure all of them were in the header
+        chrom1 = config.get("chrom1", "chrom1")
+        pos1 = config.get("pos1", "pos1")
+        chrom2 = config.get("chrom2", "chrom2")
+        pos2 = config.get("pos2", "pos2")
+
+        cell_name_col = config.get('cell_name_col', None) 
+
+        header = PairsFile(obj).header
+        header_line_count = len(header.split('\n'))
+
+        resolution = config.get("resolution", 1)
+        assert isinstance(resolution, int), f"config['resolution'] specified but is of type {type(resolution)}, must be of type int."
+
+        cell_name_pixels_dict = {}
+
+        # TODO: We'll need to persist this database so that it can be created here, then queried for individual cells as we go
+        # This also requires some way of tracking the temporary database so we can clean it up afterward
+        with duckdb.connect(config.get("temp_db", "temp_db.ddb")) as conn:
+            # Get full set of column names
+            sql_col_list = "['" + "', '".join(header.columns) + "']"
+
+            if isinstance(cell_name, str):
+                sql = (
+f"""
+-- Import the pairs file as a table
+CREATE TABLE pairs
+AS SELECT
+    {chrom1} AS chrom1, 
+    CAST(FLOOR({pos1}/{resolution}) AS INTEGER)*{resolution} AS start1, 
+    {chrom2} AS chrom2, 
+    CAST(FLOOR({pos2}/{resolution}) AS INTEGER)*{resolution} AS start2,
+    count(*) AS count
+FROM read_csv(
+    '{obj}', 
+    'names' = {sql_col_list}, 
+    'types' = {{ '{chrom1}': 'VARCHAR', '{chrom2}': 'VARCHAR' }},
+    'skip' = {header_line_count}
+)
+GROUP BY chrom1, start1, chrom2, start2;
+"""
+            )
+
+                conn.execute(sql)
+                def pixel_iter(db: str, cell_name: str):
+                    sql = (
+f"""
+SELECT chrom1, start1, start1 + {resolution} AS end1, chrom2, start2, start2 + {resolution} AS end2, count
+FROM pairs
+"""
+                    )
+            elif isinstance(cell_name, list):
+                # Create table of per-cell counts, either with or without cells
+                sql = (
+f"""
+-- Import the pairs file as a table
+CREATE TABLE pairs
+AS SELECT
+    {cell_name_col} AS cell,
+    {chrom1} AS chrom1, 
+    CAST(FLOOR({pos1}/{resolution}) AS INTEGER)*{resolution} AS start1, 
+    {chrom2} AS chrom2, 
+    CAST(FLOOR({pos2}/{resolution}) AS INTEGER)*{resolution} AS start2,
+    count(*) AS count
+FROM read_csv(
+    '{obj}', 
+    'names' = {sql_col_list}, 
+    'types' = {{ '{chrom1}': 'VARCHAR', '{chrom2}': 'VARCHAR' }},
+    'skip' = {header_line_count}
+)
+GROUP BY cell, chrom1, start1, chrom2, start2;
+"""
+                )
+                conn.execute(sql)
+
+
+
+
+
+
+    @staticmethod
+    def validate_bin_size(c: cooler.Cooler, config): ...
+
 class ScoolCreator:
     """Creates inputs and calls cooler.create_scool
 
@@ -304,10 +476,10 @@ class ScoolCreator:
             if parser:
                 # If found, then get the name, bins and pixels and update the bins and pixels dicts
                 print(f"Preparing bins and pixels insertion dict for {obj}", file = sys.stderr)
-                cell_name = parser.cell_name(obj.obj, obj.config)
-                cell_bins = parser.cell_name_bins_dict(cell_name, obj.obj, obj.config, shared_bins, obj.extended_bins_cols)
+                cell_names = parser.cell_names(obj.obj, obj.config)
+                cell_bins = parser.cell_name_bins_dict(cell_names, obj.obj, obj.config, shared_bins, obj.extended_bins_cols)
                 shared_bins = shared_bins or cell_bins
-                cell_pixels = parser.cell_name_pixels_dict(cell_name, obj.obj, obj.config, shared_bins, obj.extended_pixels_cols, obj.regions_iter)
+                cell_pixels = parser.cell_name_pixels_dict(cell_names, obj.obj, obj.config, shared_bins, obj.extended_pixels_cols, obj.regions_iter)
 
                 cell_name_bins_dict.update(cell_bins)
                 cell_name_pixels_dict.update(cell_pixels)
