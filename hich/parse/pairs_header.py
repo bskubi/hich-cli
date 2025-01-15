@@ -40,6 +40,7 @@ class PairsHeader:
         # stores the command section of the header
         self.command: List[str] = command
 
+
     def to_dict(self) -> Dict:
         """Convert self to a dictionary
 
