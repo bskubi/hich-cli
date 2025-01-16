@@ -1,6 +1,6 @@
-from hich.scool.scool_input import ScoolInput
 from hich.scool.scool_creator import ScoolCreator
-from hich.scool.cool_scool_input import CoolScoolInput
-from hich.scool.pairs_scool_input2 import PairsScoolInput
+from hich.scool.cell_pixel_iter import CellPixelIter
+from hich.scool.scool_cell_extractor import ScoolCellExtractor
+from hich.scool.cooler_extractor import CoolerExtractor, CoolCellPixelIter
 
-__all__ = ['ScoolCreator', 'ScoolInput', 'CoolScoolInput', 'PairsScoolInput']
+__all__ = ['ScoolCreator', 'CellPixelIter', 'ScoolCellExtractor', 'CoolerExtractor', 'CoolCellPixelIter']
